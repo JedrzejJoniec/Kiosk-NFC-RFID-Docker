@@ -1,0 +1,39 @@
+version: '3'
+services:
+  reader:
+    build: ./reader
+    dns:
+      - 8.8.8.8
+    container_name: reader-container
+    volumes:
+      - shared_volume:/app/data
+    privileged: true
+    devices:
+      - /dev/tty0:/dev/tty0
+    networks:
+      - screenly_default
+    environment:
+      - TZ=Europe/London
+    restart: always
+
+  app-python:
+    build: ./admin-app
+    dns:
+      - 8.8.8.8
+    container_name: admin-app-container
+    volumes:
+      - shared_volume:/app/data
+    networks:
+      - screenly_default
+    ports: 
+      - "5000:5000"
+    environment:
+      - TZ=Europe/London
+    restart: always
+
+volumes:
+ shared_volume:
+
+networks:
+  screenly_default:
+    external: true
